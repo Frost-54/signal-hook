@@ -173,10 +173,7 @@ fn wrap_action<T: 'static + Send + Sync + Borrow<U>, U: 'static + Send + Sync>(
     unsafe impl<T: 'static + Send + Sync, U: Send + Sync> Sync for ClosureState<T, U> {}
 
     let borrowed = unsafe { &*owner }.borrow() as &U as *const U;
-    let state = ClosureState {
-        owner,
-        borrowed,
-    };
+    let state = ClosureState { owner, borrowed };
 
     impl<T: 'static, U> Drop for ClosureState<T, U> {
         fn drop(&mut self) {
