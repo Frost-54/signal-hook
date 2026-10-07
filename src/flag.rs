@@ -146,7 +146,7 @@ use libc::{c_int, EINVAL};
 use crate::{low_level, SigId};
 
 /// We really want to write something like
-/// ```
+/// ```rust,ignore
 /// fn register<T: 'static + Send + Sync + Borrow<AtomicBool>>(value: T) {
 ///     unsafe {
 ///         low_level::register(|| {
