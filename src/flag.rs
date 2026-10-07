@@ -150,9 +150,9 @@ use crate::{low_level, SigId};
 /// fn register<T: 'static + Send + Sync + Borrow<AtomicBool>>(value: T) {
 ///     unsafe {
 ///         low_level::register(|| {
-///		    let flag: &AtomicBool = value.borrow();
-///		    // use flag
-///	      })
+///             let flag: &AtomicBool = value.borrow();
+///             // use flag
+///         })
 ///     }
 /// }
 /// ```
