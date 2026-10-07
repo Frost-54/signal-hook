@@ -146,14 +146,16 @@ use libc::{c_int, EINVAL};
 use crate::{low_level, SigId};
 
 /// We really want to write something like
+/// ```
 /// fn register<T: 'static + Send + Sync + Borrow<AtomicBool>>(value: T) {
 ///     unsafe {
-///		low_level::register(|| {
-///			let flag: &AtomicBool = value.borrow();
-///			// use flag
-///		})
+///         low_level::register(|| {
+///		    let flag: &AtomicBool = value.borrow();
+///		    // use flag
+///	      })
 ///     }
 /// }
+/// ```
 ///
 /// However, borrow() might not be async-safe.
 /// Therefore we must run it outside the signal handler, capture the return value of borrow() and use it in the signal handler.
