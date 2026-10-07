@@ -167,15 +167,15 @@ fn wrap_action<T: 'static + Send + Sync + Borrow<U>, U: 'static + Send + Sync>(
     struct ClosureState<T: 'static, U> {
         // cannot keep this as Box at it violates MIRI's Stack borrow rule
         owner: *mut T,
-        raw: *const U,
+        borrowed: *const U,
     }
-    unsafe impl<T: 'static + Send + Sync, U: Sync> Send for ClosureState<T, U> {}
-    unsafe impl<T: 'static + Send + Sync, U: Sync> Sync for ClosureState<T, U> {}
+    unsafe impl<T: 'static + Send + Sync, U: Send + Sync> Send for ClosureState<T, U> {}
+    unsafe impl<T: 'static + Send + Sync, U: Send + Sync> Sync for ClosureState<T, U> {}
 
     let borrowed = unsafe { &*owner }.borrow() as &U as *const U;
     let state = ClosureState {
         owner,
-        raw: borrowed,
+        borrowed,
     };
 
     impl<T: 'static, U> Drop for ClosureState<T, U> {
@@ -189,7 +189,7 @@ fn wrap_action<T: 'static + Send + Sync + Borrow<U>, U: 'static + Send + Sync>(
 
     move || {
         // SAFETY: owner is alive and never moved out of state.owner
-        let borrowed = unsafe { &*state.raw };
+        let borrowed = unsafe { &*state.borrowed };
 
         f(borrowed);
     }
